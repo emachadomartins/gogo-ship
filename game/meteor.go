@@ -1,0 +1,43 @@
+package game
+
+import (
+	"math/rand"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hakuunabatata/gogo-ship/assets"
+)
+
+type Meteor struct {
+	image    *ebiten.Image
+	speed    float64
+	position Vector
+}
+
+func NewMeteor() *Meteor {
+	image := assets.MeteorSprites[rand.Intn(len(assets.MeteorSprites))]
+
+	speed := rand.Float64() * 13
+
+	position := Vector{
+		X: rand.Float64() * screenWidth,
+		Y: -100,
+	}
+
+	return &Meteor{
+		image,
+		speed,
+		position,
+	}
+}
+
+func (m *Meteor) Update() {
+	m.position.Y += m.speed
+}
+
+func (m *Meteor) Draw(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+
+	op.GeoM.Translate(m.position.X, m.position.Y)
+
+	screen.DrawImage(m.image, op)
+}
