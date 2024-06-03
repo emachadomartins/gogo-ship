@@ -1,6 +1,10 @@
 package game
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"fmt"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Game struct {
 	player           *Player
@@ -38,6 +42,23 @@ func (g *Game) Update() error {
 		m.Update()
 	}
 
+	for _, m := range g.meteors {
+		if m.Collider().Intersects(g.player.Collider()) {
+			fmt.Println("Voce Perdeu")
+			g.Reset()
+		}
+	}
+
+	for i, m := range g.meteors {
+		for j, l := range g.lasers {
+			if m.Collider().Intersects(l.Collider()) {
+				g.meteors = append(g.meteors[:i], g.meteors[i+1:]...)
+				g.lasers = append(g.lasers[:j], g.lasers[j+1:]...)
+
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -60,4 +81,12 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func (g *Game) AddLasers(laser *Laser) {
 	g.lasers = append(g.lasers, laser)
+}
+
+func (g *Game) Reset() {
+	g.player = NewPlayer(g)
+	g.meteors = nil
+	g.lasers = nil
+	g.meteorSpawnTimer.Reset()
+
 }
