@@ -17,11 +17,11 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	// g := &Game{}
+	g := &Game{}
 
-	// err := ebiten.RunGame(g)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	err := ebiten.RunGame(g)
+	if err != nil {
+		panic(err)
+	}
 
 }
