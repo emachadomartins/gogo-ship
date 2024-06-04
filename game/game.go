@@ -16,6 +16,7 @@ type Game struct {
 	meteorSpawnTimer *Timer
 	score            int
 	lost             bool
+	record           int
 }
 
 func NewGame() *Game {
@@ -60,6 +61,10 @@ func (g *Game) Update() error {
 					g.meteors = append(g.meteors[:i], g.meteors[i+1:]...)
 					g.lasers = append(g.lasers[:j], g.lasers[j+1:]...)
 					g.score += 1
+
+					if g.score > g.record {
+						g.record = g.score
+					}
 				}
 			}
 		}
@@ -76,6 +81,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if !g.lost {
 
 		g.player.Draw(screen)
+		text.Draw(screen, fmt.Sprintf("Record: %d", g.record), assets.FontUi, 20, 50, color.White)
 		text.Draw(screen, fmt.Sprintf("Score: %d", g.score), assets.FontUi, 20, 100, color.White)
 		for _, l := range g.lasers {
 			l.Draw(screen)
@@ -87,7 +93,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	} else {
 		text.Draw(screen, "You Lost!\nPress 'space'\nto try again", assets.FontUi, screenWidth/2-150, 200, color.White)
-		// text.Draw(screen, "Press 'space' to try again", assets.FontUi, screenWidth/2-500, screenHeight/2+50, color.White)
 	}
 
 }
